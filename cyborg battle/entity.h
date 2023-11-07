@@ -36,7 +36,7 @@ class Entity {
 
 	AnimationSet *animSet; //set of all animations this entity can have
 	Animation *currentAnim; //current animation the entity is using
-	Frame* curentFrame; //the current frame in the above animation the entity is using
+	Frame* currentFrame; //the current frame in the above animation the entity is using
 	float frameTimer; //helps animate frame to frame
 
 	//VIRTUAL FUNCTIONS
