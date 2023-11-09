@@ -8,6 +8,7 @@
 
 //Abstract Class. cannot instantiate an object of type Entity e.g cannot do Entity e;
 class Entity {
+public:
 	//reference constants
 	static const int DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT,DIR_NONE;
 	
