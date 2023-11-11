@@ -23,7 +23,7 @@ public:
 	static const string HERO_DASH_ANIM_DOWN;
 	static const string HERO_DASH_ANIM_LEFT;
 	static const string HERO_DASH_ANIM_RIGHT;
-	static const string HERO_DIE_ANIM_RIGHT;
+	static const string HERO_ANIM_DIE;
 
 	static const int HERO_STATE_IDLE;
 	static const int HERO_STATE_MOVE;
@@ -31,7 +31,7 @@ public:
 	static const int HERO_STATE_DASH;
 	static const int HERO_STATE_DEAD;
 
-	Hero(Animation* animSet);
+	Hero(AnimationSet* animSet);
 	void update();
 	void slash();
 	void dash();
