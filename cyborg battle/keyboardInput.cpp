@@ -17,7 +17,7 @@ void KeyboardInput::update(SDL_Event* e) {
 	if (e->type == SDL_KEYDOWN) {
 		if (e->key.keysym.scancode == DASH) {
 			hero->dash();
-		}if (e->key.keysym.scancode == DASH) {
+		}if (e->key.keysym.scancode == SLASH) {
 			hero->slash();
 		}
 	}

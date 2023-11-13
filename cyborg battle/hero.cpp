@@ -58,7 +58,7 @@ void Hero::update() {
 	updateCollisions();
 
 	updateHitBox();
-	updateDamages();
+	updateDamage();
 
 	updateAnimation();
 	updateInvincibleTimer();
@@ -159,6 +159,10 @@ void Hero::updateAnimation(){
 	if (state == HERO_STATE_MOVE && !moving) {
 		changeAnimation(HERO_STATE_IDLE, true);
 	}
+	//if should be showing running animation, lets change state properly
+	if (state != HERO_STATE_MOVE && moving) {
+		changeAnimation(HERO_STATE_MOVE, true);
+	}
 
 	frameTimer += TimeController::timeController.dT;
 	//time to change frames :D
@@ -185,7 +189,7 @@ void Hero::updateAnimation(){
 		frameTimer = 0;
 	}
 }
-void Hero::updateDamages(){
+void Hero::updateDamage(){
 	if (active && hp > 0 && invincibleTimer <= 0) {
 		for (auto entity = Entity::entities.begin(); entity != Entity::entities.end(); entity++) {
 			if ((*entity)->active && (*entity)->type == "enemy") {

@@ -39,6 +39,6 @@ public:
 	void revive();
 	void changeAnimation(int newState, bool resetFrameToBegining);
 	void updateAnimation();
-	void updateDamages();
+	void updateDamage();
 };
 #endif

@@ -25,6 +25,7 @@
     <ClCompile Include="drawing_functions.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="frame.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="groupBuilder.cpp" />
     <ClCompile Include="hero.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="drawing_functions.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="frame.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="group.h" />
     <ClInclude Include="groupBox.h" />
