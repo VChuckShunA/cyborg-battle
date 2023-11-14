@@ -4,9 +4,12 @@
 #include "SDL_mixer.h"
 #include "globals.h"
 #include "game.h"
-
+#include <cstdlib> // gives us access to srand and rand
+#include <ctime> //gives us access to time
 int main(int argc, char **agv)
 {
+	//set the random seef of the random number sequence
+	srand(time(0));
 	//setup SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
