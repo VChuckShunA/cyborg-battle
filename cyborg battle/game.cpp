@@ -3,6 +3,23 @@
 Game::Game() {
 	string resPath = getResourcePath();
 	backgroundImage = loadTexture(resPath + "map.png", Globals::renderer);
+	splashImage = loadTexture(resPath + "cyborgtitle.png", Globals::renderer);
+	overlayImage = loadTexture(resPath + "overlay.png", Globals::renderer);
+
+	splashShowing = true;
+	overlayTimer = 2;
+
+	//load up sounds
+	SoundManager::soundManager.loadSound("hit", resPath + "Randomize2.wav");
+	SoundManager::soundManager.loadSound("enemyHit", resPath + "Hit_Hurt9.wav");
+	SoundManager::soundManager.loadSound("swing", resPath + "Randomize21.wav");
+	SoundManager::soundManager.loadSound("dash", resPath + "dash.wav");
+	SoundManager::soundManager.loadSound("growl", resPath + "Randomize34.wav");
+	SoundManager::soundManager.loadSound("enemyDie", resPath + "Randomize41.wav");
+
+	song = Mix_LoadMUS(string(resPath+"Fatal Theory.wav").c_str()); //Song by Ryan Beveridge
+	if (song != NULL)
+		Mix_PlayMusic(song, -1);
 
 	//holds a list of group types. This is list describes the types of groups of data our frames can have
 	list<DataGroupType> dataGroupTypes;
@@ -33,6 +50,9 @@ Game::Game() {
 
 	globAnimSet = new AnimationSet();
 	globAnimSet->loadAnimationSet("glob.fdset", dataGroupTypes, true, 0, true);
+
+	grobAnimSet = new AnimationSet();
+	grobAnimSet->loadAnimationSet("grob.fdset", dataGroupTypes, true, 0, true);
 
 	wallAnimSet = new AnimationSet();
 	wallAnimSet->loadAnimationSet("wall.fdset", dataGroupTypes);
@@ -85,11 +105,20 @@ Game::Game() {
 }
 Game::~Game() {
 	cleanup(backgroundImage);
+	cleanup(splashImage);
+	cleanup(overlayImage);
+
+	Mix_PauseMusic();
+	Mix_FreeMusic(song);
+
+	if (scoreTexture != NULL)//if used, then cleanup
+		cleanup(scoreTexture);
 
 	Entity::removeAllFromList(&Entity::entities, false);
 
 	delete heroAnimSet;
 	delete globAnimSet;
+	delete grobAnimSet;
 	delete wallAnimSet;
 
 	delete hero;
@@ -131,14 +160,39 @@ void Game::update() {
 				case SDL_SCANCODE_ESCAPE: //esc key
 					quit = true;
 					break;
-				case SDL_SCANCODE_SPACE: //spce key
-					hero->revive();
+				case SDL_SCANCODE_SPACE: //space key
+					if (splashShowing)
+						splashShowing = false;
+					if (overlayTimer <= 0 && hero->hp < 1) {
+						//cleanup and restart the game
+						enemiesToBuild = 2;
+						enemiesBuilt = 0;
+						enemyBuildTimer = 3;
+						overlayTimer = 2;
+
+						Glob::globsKilled = 0;
+						Grob::grobsKilled = 0;
+
+						if (scoreTexture != NULL) {
+							cleanup(scoreTexture);
+							scoreTexture = NULL;
+						}
+
+						//remove all existing enemies
+						for (list<Entity*>::iterator enemy = enemies.begin(); enemy != enemies.end(); enemy++) {
+							(*enemy)->active = false;
+						}
+						hero->revive();
+					}
 					break;
 				}
 			}
 			heroInput.update(&e);//updating hero inputs
 		}
-
+		//make our overlay timer tick down
+		if (hero->hp < 1 && overlayTimer>0) {
+			overlayTimer -= TimeController::timeController.dT;
+		}
 		//update all entities
 		for (list<Entity*>::iterator entity = Entity::entities.begin(); entity != Entity::entities.end(); entity++) {
 			//remember how awesome polymorphism is?
@@ -147,7 +201,7 @@ void Game::update() {
 		}
 
 		//spawn enemies
-		if (hero->hp > 0) {
+		if (hero->hp > 0 && !splashShowing) {
 			if (enemiesToBuild == enemiesBuilt) {
 				enemiesToBuild = enemiesToBuild * 2;
 				enemiesBuilt = 0;
@@ -163,6 +217,17 @@ void Game::update() {
 
 				enemies.push_back(enemy);
 				Entity::entities.push_back(enemy);
+
+				if (enemiesBuilt % 5 == 0)
+				{
+					Grob* grob = new Grob(grobAnimSet);
+					grob->x = getRandomNumber(Globals::ScreenWidth - (2 * 32) - 32) + 32 + 16; //random x value between our walls
+					grob->y = getRandomNumber(Globals::ScreenHeight - (2 * 32) - 32) + 32 + 16; //random x value between our walls
+					grob->invincibleTimer = 0.01;
+
+					enemies.push_back(grob);
+					Entity::entities.push_back(grob);
+				}
 			}
 		}
 
@@ -174,15 +239,34 @@ void Game::draw() {
 	//clear the screen
 	SDL_SetRenderDrawColor(Globals::renderer, 145, 133, 129, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(Globals::renderer);
+	if (splashShowing) {
 
-	//draw the background
-	renderTexture(backgroundImage, Globals::renderer, 0, 0);
+		renderTexture(splashImage, Globals::renderer, 0, 0);
+	}
+	else {
+		//draw the background
+		renderTexture(backgroundImage, Globals::renderer, 0, 0);
 
-	//sort all entities based on y(depth)
-	Entity::entities.sort(Entity::EntityCompare);
-	//draw all of the entities 
-	for (list<Entity*>::iterator entity = Entity::entities.begin(); entity != Entity::entities.end(); entity++) {
-		(*entity)->draw();
+		//sort all entities based on y(depth)
+		Entity::entities.sort(Entity::EntityCompare);
+		//draw all of the entities 
+		for (list<Entity*>::iterator entity = Entity::entities.begin(); entity != Entity::entities.end(); entity++) {
+			(*entity)->draw();
+		}
+		if (overlayTimer <= 0 && hero->hp < 1) {
+			renderTexture(overlayImage, Globals::renderer, 0, 0);
+			if (scoreTexture == NULL) {
+				//generate score text
+				SDL_Color colour = { 255,255,255,255 };//white
+
+				stringstream ss;
+				ss << "Enemies dispatched: " << Glob::globsKilled + Grob::grobsKilled;
+
+				string resPath = getResourcePath();
+				scoreTexture = renderText(ss.str(), resPath + "vermin_vibes_1989.ttf",colour,30,Globals::renderer);
+			}
+			renderTexture(scoreTexture, Globals::renderer, 20, 50);
+		}
 	}
 
 	//after we're done drawing/rendering, show it to the screen

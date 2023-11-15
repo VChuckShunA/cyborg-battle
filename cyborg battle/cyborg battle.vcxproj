@@ -28,6 +28,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="glob.cpp" />
     <ClCompile Include="globals.cpp" />
+    <ClCompile Include="grob.cpp" />
     <ClCompile Include="groupBuilder.cpp" />
     <ClCompile Include="hero.cpp" />
     <ClCompile Include="keyboardInput.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="randomNumber.cpp" />
     <ClCompile Include="res_path.cpp" />
+    <ClCompile Include="soundManager.cpp" />
     <ClCompile Include="timeController.cpp" />
     <ClCompile Include="wall.cpp" />
   </ItemGroup>
@@ -49,6 +51,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="glob.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="grob.h" />
     <ClInclude Include="group.h" />
     <ClInclude Include="groupBox.h" />
     <ClInclude Include="groupBuilder.h" />
@@ -60,6 +63,7 @@
     <ClInclude Include="livingEntity.h" />
     <ClInclude Include="randomNumber.h" />
     <ClInclude Include="res_path.h" />
+    <ClInclude Include="soundManager.h" />
     <ClInclude Include="timeController.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>
