@@ -9,6 +9,12 @@ Game::Game() {
 	splashShowing = true;
 	overlayTimer = 2;
 
+	//Setup camera
+	Globals::camera.x = 0;
+	Globals::camera.y = 0;
+	Globals::camera.w = Globals::ScreenWidth;
+	Globals::camera.h = Globals::ScreenHeight;
+
 	//load up sounds
 	SoundManager::soundManager.loadSound("hit", resPath + "Randomize2.wav");
 	SoundManager::soundManager.loadSound("enemyHit", resPath + "Hit_Hurt9.wav");
@@ -66,6 +72,10 @@ Game::Game() {
 	heroInput.hero = hero;
 	//add hero to the entity list
 	Entity::entities.push_back(hero);
+
+	//Get camera to follow hero
+	camController.target = hero;
+
 
 	int tileSize = 32;
 	//build all the walls for this game
@@ -231,6 +241,9 @@ void Game::update() {
 			}
 		}
 
+		//update camera position
+		camController.update();
+
 		//draw all entities
 		draw();
 	}
@@ -241,11 +254,11 @@ void Game::draw() {
 	SDL_RenderClear(Globals::renderer);
 	if (splashShowing) {
 
-		renderTexture(splashImage, Globals::renderer, 0, 0);
+		renderTexture(splashImage, Globals::renderer, 0 , 0 );
 	}
 	else {
 		//draw the background
-		renderTexture(backgroundImage, Globals::renderer, 0, 0);
+		renderTexture(backgroundImage, Globals::renderer, 0 - Globals::camera.x, 0 - Globals::camera.y); //remove the camera substraction if you want the background to go forever
 
 		//sort all entities based on y(depth)
 		Entity::entities.sort(Entity::EntityCompare);

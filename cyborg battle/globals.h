@@ -23,5 +23,8 @@ public:
 	//clips off header e.g "clip: 50 114 44 49" turns into "50 114 44 49" 
 	static string clipOffDataHeader(string data);
 
+	//camera
+	static SDL_Rect camera;
+
 };
 #endif // !GLOBALS

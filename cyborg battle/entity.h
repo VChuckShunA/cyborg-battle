@@ -1,6 +1,8 @@
 #ifndef ENTITY
 #define ENTITY
 
+#include<limits>
+#include<algorithm>
 #include "globals.h"
 #include "timeController.h"
 #include "animationSet.h"
@@ -19,6 +21,7 @@ public:
 	int direction;
 	bool solid = true; //is this thing solid, can things pass through me
 	bool collideWithSolids = true; //sometimes we are solid but I pass through other solids
+	bool dieOnSolids =false;//useful if you need entities to die on touching solids(e.g bullet hit wall)
 	bool active = true; //entity turned on or off
 	string type = "entity"; // what type of entity is it? e.g hero, enemy, wall .etc
 	bool moving; //is the entity moving?
@@ -50,11 +53,14 @@ public:
 
 	virtual void changeAnimation(int newState, bool resetFrameToBegining)=0; //abstract function
 	virtual void updateCollisions(); //how we bump into stuff in the world
+	virtual void crashOntoSolid() { ; }//if dieonSolids is true, then this function will deal with dying
 
 	//HELP FUNCTIONS
+	static float SweptAABB(SDL_Rect movingBox, float vx, float vy,SDL_Rect otherBox, float &normalX, float &normalY);
 	static float distanceBetweenTwoRects(SDL_Rect& r1, SDL_Rect& r2);
 	static float distanceBetweenTwoEntities(Entity *e1, Entity *e2);
 	static float angleBetweenTwoEntities(Entity* e1, Entity* e2);
+	static float distanceBetweenTwoPoints(float cx1, float cy1, float cx2, float cy2);
 	static bool checkCollision(SDL_Rect cbox1, SDL_Rect cbox2);
 	static int angleToDirection(float angle);
 	static float angleBetweenTwoPoints(float cx1, float cy1, float cx2, float cy2);
