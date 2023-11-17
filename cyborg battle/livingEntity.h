@@ -16,6 +16,7 @@ public:
 	virtual void updateDamage() = 0;//how we get damaged by other things (up to each class to define)
 	virtual void die() = 0;//abstract. up to other classes to decided how they die
 	virtual void updateInvincibleTimer();
+	virtual void hitLanded(LivingEntity* entity) { ; }
 
 	void draw(); //overriding entities draw
 };

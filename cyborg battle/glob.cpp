@@ -289,6 +289,7 @@ void Glob::updateDamage() {
 				LivingEntity* enemy = (LivingEntity*)(*entity);
 				//if enemy hits me, thennnnnn
 				if (enemy->damage > 0 && Entity::checkCollision(collisionBox, enemy->hitBox)) {
+					enemy->hitLanded(this);//let attacker know they are hit
 					hp -= enemy->damage;
 					if (hp > 0) {
 						SoundManager::soundManager.playSound("enemyHit");

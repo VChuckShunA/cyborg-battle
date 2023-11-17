@@ -7,7 +7,7 @@
 bool Globals::debugging=false;
 
 //sdl related 
-int Globals::ScreenWidth=640, Globals::ScreenHeight=352, Globals::ScreenScale=2;
+int Globals::ScreenWidth=640, Globals::ScreenHeight=352, Globals::ScreenScale=4;
 SDL_Renderer* Globals::renderer=NULL;
 
 

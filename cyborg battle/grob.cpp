@@ -216,7 +216,7 @@ void Grob::updateDamage() {
 				LivingEntity* enemy = (LivingEntity*)(*entity);
 
 				if (enemy->damage > 0 && Entity::checkCollision(collisionBox, enemy->hitBox)) {
-
+					enemy->hitLanded(this);//let attacker know they are hit
 					hp -= enemy->damage;
 
 					if (hp > 0) {
